@@ -1,6 +1,8 @@
 # development
 out
 *.so
+outfw/
+.idea
 *.pyc
 __pycache__/
 .config
