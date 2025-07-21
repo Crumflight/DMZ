@@ -66,7 +66,9 @@ endif
 # Include board specific makefile
 include src/Makefile
 -include src/extras/Makefile
+ifneq ($(patsubst "%",%,$(CONFIG_BOARD_DIRECTORY)),extras/gd32)
 -include src/$(patsubst "%",%,$(CONFIG_BOARD_DIRECTORY))/Makefile
+endif
 
 ################ Main build rules
 
@@ -124,7 +126,11 @@ $(KCONFIG_CONFIG) olddefconfig: src/Kconfig
 	$(Q)$(PYTHON) lib/kconfiglib/olddefconfig.py src/Kconfig
 
 menuconfig:
-	$(Q)$(PYTHON) lib/kconfiglib/menuconfig.py src/Kconfig
+	$(Q)if [ -n "$(HEADLESS)" ] || [ ! -t 0 ]; then \
+	$(PYTHON) lib/kconfiglib/olddefconfig.py src/Kconfig; \
+	else \
+	$(PYTHON) lib/kconfiglib/menuconfig.py src/Kconfig; \
+fi
 
 ################ Generic rules
 
